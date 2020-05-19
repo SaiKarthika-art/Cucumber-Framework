@@ -1,5 +1,6 @@
 package stepDefinition;
 
+import com.qa.customExtentReport.CustomExtentReporter;
 import com.qa.pages.HomePage;
 import com.qa.pages.ProductDetail;
 import com.qa.pages.ProductListing;
@@ -7,9 +8,13 @@ import com.qa.util.TestBase;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+
+import java.io.IOException;
+
 import org.junit.Assert;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -24,6 +29,19 @@ public class Checkout extends TestBase{
 	String shirtNameInCartPage;
 	String totalInCartPage;
 	String shirtTotal;
+	
+	private static CustomExtentReporter customExtentReporter;
+	private static boolean isReporterRunning;
+	//private DriverServices services;
+	
+	@Before()
+	public void beforeScenario(Scenario scenario) {
+		if(!isReporterRunning) {
+			customExtentReporter = new CustomExtentReporter("C:\\SaiKarthi\\Code Repositories\\Java\\org.com.amazonEcommerce\\target\\TestReport.html");
+			isReporterRunning = true;
+		}
+		
+	}
 	
 	@Given("user is logged onto the Amazon website as a guest user")
 	public void user_is_logged_onto_the_Amazon_website_as_a_guest_user( ) {
@@ -69,14 +87,14 @@ public class Checkout extends TestBase{
 	}
 	
 	@After
-	public void tearDown(Scenario scenario) {
+	public void tearDown(Scenario scenario) throws IOException {
+		String screenshotFileName = "C:\\SaiKarthi\\Code Repositories\\Java\\org.com.amazonEcommerce\\target" + scenario.getName().replaceAll(" ", "") +  ".jpeg";
 		if(scenario.isFailed()) {
-			scenario.embed(((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES), "image/png");
-			scenario.write("Scenario failed");
-		}else {
-			scenario.write("Scenario passed");
-		}
-		driver.close();
+			//scenario.embed(((TakesScreenshot)driver).getScreenshotAs(OutputType.BYTES), "image/png");
+			//services.getGenericHelper().takeScreenshot(screenshotFileName);
+		}customExtentReporter.createTest(scenario, screenshotFileName);
+		customExtentReporter.writeToReport();
+		driver.quit();
 	}
 
 

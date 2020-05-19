@@ -22,7 +22,7 @@ public class ProductDetail extends TestBase {
 
 	// Page Factory - OR
 
-	@FindBy(id = "productTitle")
+	@FindBy(id = "productTit")
 	WebElement txtShirtName;
 	
 	@FindBy(xpath = "//*[contains(@id,'native_dropdown_selected_size_name')]")
